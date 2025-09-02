@@ -1,3 +1,6 @@
+from jax import config
+config.update("jax_enable_x64", True)
+
 import jax.numpy as jnp
 import jax.scipy as jsp
 import numpy as np
@@ -7,9 +10,6 @@ from sklearn.decomposition import PCA
 from scipy import optimize, stats
 import pandas as pd
 import random
-
-from jax.config import config
-config.update("jax_enable_x64", True)
 
 random.seed(0)
 
