@@ -166,7 +166,7 @@ class Model():
     vGPLVM-MMD model
     """
 
-    def __init__(self, data, reference, latent_dim=30, kernel_hyperparameters=[0.01], num_inducing=50, S2=1., sigma2=0.1, jitter = 1e-10, prior_var=1., MMD_H = [0.01]):
+    def __init__(self, data, reference, latent_dim=30, kernel_hyperparameters=None, num_inducing=50, S2=1., sigma2=0.1, jitter = 1e-10, prior_var=1., MMD_H=None):
         """
         initiation of GMM in Perler
 
@@ -215,10 +215,14 @@ class Model():
         self.__m = num_inducing
         self.__inducings = None
         self.__S = jnp.sqrt(S2)
+        if kernel_hyperparameters is None:
+            kernel_hyperparameters = [0.01]
         self.__kernel_hyperparameters_sq = [jnp.sqrt(k) for k in kernel_hyperparameters]
         self.__num_kernel_hyperparameters = len(kernel_hyperparameters)
         self.__jitter = jitter
         self.__prior_var = prior_var
+        if MMD_H is None:
+            MMD_H = [0.01]
         self.__MMD_H = [jnp.sqrt(h) for h in MMD_H]
         self.__sigma = jnp.sqrt(sigma2)
         self.init_Params = None
