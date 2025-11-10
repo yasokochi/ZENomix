@@ -174,3 +174,6 @@ Dataset: 50k scRNA-seq cells, 5k reference cells.
 | GPU (CUDA 12.x)  | `pip install "zenomix[cuda12] @ git+https://github.com/yasokochi/ZENOmix.git"`      |
 | GPU + RFF        | `pip install "zenomix[cuda12,rff] @ git+https://github.com/yasokochi/ZENOmix.git"`  |
 
+
+If you find this work is useful, please cite: hogehoge
+
