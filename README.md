@@ -175,5 +175,5 @@ Dataset: 50k scRNA-seq cells, 5k reference cells.
 | GPU + RFF        | `pip install "zenomix[cuda12,rff] @ git+https://github.com/yasokochi/ZENOmix.git"`  |
 
 
-If you find this work is useful, please cite: hogehoge
+If you find this work is useful, please cite: Yasushi Okochi, Takaaki Matsui, Shunta Sakaguchi, Takefumi Kondo, Honda Naoki, Zero-shot reconstruction of mutant spatial transcriptomes, bioRxiv, 2022
 
