@@ -106,7 +106,7 @@ import zenomix
 znx = zenomix.Model(
     data=scRNAseq,   # mutant scRNA-seq (cells × genes) DataFrame or compatible
     reference=ISH,   # WT ISH spatial reference (cells × genes) DataFrame or compatible
-    latent_dim=20,
+    latent_dim=20
 )
 
 znx.latent_calibration(method='adam')
