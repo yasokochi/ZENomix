@@ -1,12 +1,12 @@
-# ZENOmix
+# ZENomix
 
-ZENOmix enables zero-shot reconstruction of mutant spatial transcriptomes using scRNA-seq and wildtype *in situ* data.
+ZENomix enables zero-shot reconstruction of mutant spatial transcriptomes using scRNA-seq and wildtype *in situ* data.
 
 ---
 
-## 1. Install ZENOmix
+## 1. Install ZENomix
 
-You can install ZENOmix directly via `pip`:
+You can install ZENomix directly via `pip`:
 
 ```bash
 pip install zenomix
@@ -15,18 +15,18 @@ pip install zenomix
 If you want to install from Github:
 
 ```bash
-pip install git+https://github.com/yasokochi/ZENOmix.git
+pip install git+https://github.com/yasokochi/ZENomix.git
 ```
 
 Or clone and install in editable/development mode:
 
 ```bash
-git clone https://github.com/yasokochi/ZENOmix.git
-cd ZENOmix
+git clone https://github.com/yasokochi/ZENomix.git
+cd ZENomix
 pip install -e .
 ```
 
-> ❗ **Important:** ZENOmix is built on **JAX**.  
+> ❗ **Important:** ZENomix is built on **JAX**.  
 > **Recommended:** Install JAX yourself first (CPU or GPU) following the official guidance for your environment.  
 > **Alternative:** If you haven’t installed JAX yet, you can also install it **together** using extras such as `zenomix[cuda12]`.
 
@@ -35,7 +35,7 @@ pip install -e .
 
 ## 2. Install JAX (recommended to do first)
 
-Install JAX **before** ZENOmix depending on your hardware/runtime.  
+Install JAX **before** ZENomix depending on your hardware/runtime.  
 *MPS/Metal (Mac GPU) is not supported due to float64 precision requirements.*
 
 ### 🖥️ CPU only
@@ -56,14 +56,14 @@ pip install --upgrade "jax[cuda12]>=0.6,<0.7"
 pip install --upgrade "jax[cuda13]>=0.6,<0.7"
 ```
 
-> After JAX is installed, install ZENOmix normally (Section 1).
+> After JAX is installed, install ZENomix normally (Section 1).
 
 
 ---
 
 ## 🔧 Didn’t install JAX yet? (alternative via extras)
 
-You can install ZENOmix **and JAX** together using extras:
+You can install ZENomix **and JAX** together using extras:
 
 | Environment | Command |
 |-------------|---------|
@@ -134,7 +134,7 @@ print(recon.head())
 # PyPI with Jax
 pip install "zenomix[cpu]"
 # Latest from GitHub
-pip install git+https://github.com/yasokochi/ZENOmix.git
+pip install git+https://github.com/yasokochi/ZENomix.git
 ```
 
 ### ✅ Linux + CUDA
@@ -151,7 +151,7 @@ pip install git+https://github.com/yasokochi/ZENOmix.git
 # PyPI with Jax and Numpyro
 pip install "zenomix[cuda12,rff]"
 # Latest from GitHub
-pip install git+https://github.com/yasokochi/ZENOmix.git
+pip install git+https://github.com/yasokochi/ZENomix.git
 ```
 
 
@@ -174,9 +174,9 @@ Dataset: 50k scRNA-seq cells, 5k reference cells.
 
 | Scenario         | Command                              |
 |------------------|--------------------------------------|
-| Recommended      | Install JAX first, then ZENOmix      |
+| Recommended      | Install JAX first, then ZENomix      |
 | CPU only         | `pip install "zenomix[cpu]"`         |
 | GPU (CUDA 12.x)  | `pip install "zenomix[cuda12]"`      |
 | GPU + RFF        | `pip install "zenomix[cuda12,rff]"`  |
-| GitHub latest    | `pip install git+https://github.com/yasokochi/ZENOmix.git` |
+| GitHub latest    | `pip install git+https://github.com/yasokochi/ZENomix.git` |
 
