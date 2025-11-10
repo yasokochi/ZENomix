@@ -1,6 +1,7 @@
 # ZENomix
 
 ZENomix enables zero-shot reconstruction of mutant spatial transcriptomes using scRNA-seq and wildtype *in situ* data.
+> Cite: Yasushi Okochi, Takaaki Matsui, Shunta Sakaguchi, Takefumi Kondo, Honda Naoki, Zero-shot reconstruction of mutant spatial transcriptomes, bioRxiv, 2022
 
 ---
 
@@ -105,15 +106,16 @@ import zenomix
 # Make sure both datasets are normalized (e.g., log1p(CPM)).
 znx = zenomix.Model(
     data=scRNAseq,   # mutant scRNA-seq (cells × genes) DataFrame or compatible
-    reference=ISH,   # WT ISH spatial reference (cells × genes) DataFrame or compatible
-    latent_dim=20
+    reference=spatial_reference,   # WT spatial reference (cells × genes) DataFrame or compatible
+    latent_dim=50
 )
 
-znx.latent_calibration(method='adam')
+znx.latent_calibration(method='adam')   # 'adam' (fast, for large dataset) or 'lbfgs' (for small dataset)
 recon = znx.reconstruction()
 print(recon.head())
 ```
 
+> ✅️ For more details, see [examples](examples/).
 
 ---
 
@@ -175,5 +177,4 @@ Dataset: 50k scRNA-seq cells, 5k reference cells.
 | GPU + RFF        | `pip install "zenomix[cuda12,rff] @ git+https://github.com/yasokochi/ZENomix.git"`  |
 
 
-If you find this work is useful, please cite: Yasushi Okochi, Takaaki Matsui, Shunta Sakaguchi, Takefumi Kondo, Honda Naoki, Zero-shot reconstruction of mutant spatial transcriptomes, bioRxiv, 2022
 
