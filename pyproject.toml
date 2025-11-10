@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zenomix"
+authors = [
+  {name = "Yasushi Okochi", email = "okochi.yasushi.z8@f.mail.nagoya-u.ac.jp"}
+]
+description = "Zero-shot reconstruction of mutant spatial transcriptomes"
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+requires-python = ">=3.10.5, <3.12"
+dependencies = [
+  "numpy>=2.0,<3.0",
+  "scipy>=1.11,<2.0",
+  "pandas>=2.1,<3.0",
+  "scikit-learn>=1.3,<2.0" 
+]
+[project.optional-dependencies]
+cpu = [
+  "jax[cpu]>=0.6,<0.7",
+  "optax>=0.2,<0.3"         
+]
+cuda12 = [
+  "jax[cuda12]>=0.6,<0.7",
+  "optax>=0.2,<0.3"      
+]
+cuda13 = [
+  "jax[cuda13]>=0.6,<0.7",
+  "optax>=0.2,<0.3"      
+]
+rff = [
+  "numpyro>=0.18,<0.20"
+]
+
+# --- version pinned for reproducibility---
+cpu_pinned = [
+  "jax[cpu]==0.6.2",
+  "optax>=0.2.6"      
+]
+cuda12_pinned = [
+  "jax[cuda12]==0.6.2",
+  "optax>=0.2.6"      
+]
+cuda13_pinned = [
+  "jax[cuda13]==0.6.2",
+  "optax>=0.2.6"      
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
