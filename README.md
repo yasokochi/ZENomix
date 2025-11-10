@@ -170,7 +170,7 @@ Dataset: 50k scRNA-seq cells, 5k reference cells.
 
 ---
 
-## ✅ TL;DR
+## 7. Summary
 
 | Scenario         | Command                              |
 |------------------|--------------------------------------|
