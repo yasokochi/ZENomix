@@ -365,6 +365,10 @@ class Model():
     @property
     def data(self): return self.__data
     @property
+    def reference(self): return self.__reference
+    @property
+    def genes_common(self): return self.__genes_common
+    @property
     def A_R(self): return self.__A_R.copy()
     @property
     def A_I(self): return self.__A_I.copy()
