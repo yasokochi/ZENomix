@@ -6,3 +6,5 @@ These datasets are used in the example scripts located in the `examples/` direct
 
 - res_mt: output of ZENomix of MZoep spatial transcriptomes
 - res_wt: output of ZENomix of Wildtype spatial transcriptomes
+
+- zf_geometry.txt is necessary for 3D visualization of embryo.
