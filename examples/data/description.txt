@@ -2,3 +2,7 @@ These datasets are used in the example scripts located in the `examples/` direct
 # zfish_sample
 - scRNA-seq data: Farrell JA, Wang Y, Riesenfeld SJ, Shekhar K, Regev A, Schier AF. Single-cell reconstruction of developmental trajectories during zebrafish embryogenesis. Science. 2018 Jun 1;360(6392):eaar3131. doi: 10.1126/science.aar3131. Epub 2018 Apr 26. PMID: 29700225; PMCID: PMC6247916.
 - Spatial reference data and geometry data: Satija R, Farrell JA, Gennert D, Schier AF, Regev A. Spatial reconstruction of single-cell gene expression data. Nat Biotechnol. 2015 May;33(5):495-502. doi: 10.1038/nbt.3192. Epub 2015 Apr 13. PMID: 25867923; PMCID: PMC4430369.
+
+
+- res_mt: output of ZENomix of MZoep spatial transcriptomes
+- res_wt: output of ZENomix of Wildtype spatial transcriptomes
