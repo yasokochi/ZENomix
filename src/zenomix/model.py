@@ -333,7 +333,12 @@ class Model():
             # Unknown optimizer specified
             raise ValueError(f"Unknown method '{method}'. Choose from 'lbfgs' or 'adam'.")
     
-    def reconstruction(self, geometry=None):
+    def reconstruction(self):
+        """
+        Reconstruct gene expression data using the calibrated model.
+        Returns:
+            DataFrame of predicted geen expression data on reference data
+        """
 
         Y_I = gp_reconstruct_fp64(
             self.__M_R,
@@ -349,6 +354,11 @@ class Model():
         return pd.DataFrame(np.array(Y_I), columns=self.__data.columns, index=self.__reference.index)
 
     def cov_gene(self, gene):
+        """
+        Estimate variance of predicted gene expression data.
+        Returns:
+            variance vector of reconstructed gene expression for the specified gene.
+        """
         cov_I = cov_gene_fp64(
             self.__M_R,
             self.__M_I,
