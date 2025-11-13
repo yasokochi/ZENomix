@@ -16,6 +16,7 @@ from .constants import dtype, EPS
 from .rff import rff_init_matern32, MMD_rff
 from .utils import toVector, toParams, shapeParams, vv, _ensure_common_genes
 from .objective import get_L_hat, get_KL, minus_Lri, grad_minus_Lri
+from .reconstruction import gp_reconstruct_fp64, cov_gene_fp64
 from .metrics import MMD
 from .psi import get_psi
 from .kernel import kernel
@@ -331,35 +332,34 @@ class Model():
         else:
             # Unknown optimizer specified
             raise ValueError(f"Unknown method '{method}'. Choose from 'lbfgs' or 'adam'.")
+    
+    def reconstruction(self, geometry=None):
 
-    def reconstruction(self):
-        # Predict expression for reference modality from scRNA-seq data
-        rpsi0, rpsi1, rpsi2 = get_psi(self.__kernel_hyperparameters_sq, self.__S, self.__M_R, self.__Xu, self.__jitter)
-        ipsi0, ipsi1, ipsi2 = get_psi(self.__kernel_hyperparameters_sq, self.__S, self.__M_I, self.__Xu, self.__jitter)
-        beta = 1/self.__sigma**2
-        Kuu  = kernel(self.__Xu, self.__Xu, self.__kernel_hyperparameters_sq, self.__jitter)
-        Qinv = jnp.linalg.inv(Kuu + beta * rpsi2)
-        B = beta * (Qinv @ rpsi1.T @ self.__data.values)
-        return pd.DataFrame(np.array(ipsi1 @ B), columns=self.__data.columns, index=self.__reference.index)
-        
+        Y_I = gp_reconstruct_fp64(
+            self.__M_R,
+            self.__M_I,
+            self.__Xu,
+            self.__S,
+            self.__sigma,
+            self.__kernel_hyperparameters_sq,
+            self.__jitter,
+            self.__data.values      # R 側データ
+        )
+
+        return pd.DataFrame(np.array(Y_I), columns=self.__data.columns, index=self.__reference.index)
+
     def cov_gene(self, gene):
-        # Predictive covariance for a single gene across reference cells
-        rpsi0, rpsi1, rpsi2 = get_psi(self.__kernel_hyperparameters_sq, self.__S, self.__M_R, self.__Xu, self.__jitter)
-        beta = 1/self.__sigma**2
-        Kuu = kernel(self.__Xu, self.__Xu, self.__kernel_hyperparameters_sq, self.__jitter)
-        Q_inv = jnp.linalg.inv(Kuu + beta*rpsi2)
-        B = beta*Q_inv @ rpsi1.T @ self.__data[gene].values
-        B = B.reshape(len(B), 1)
-
-        def each_psi(z):
-            # Per-cell predictive covariance contribution using Phi-statistics
-            z = z.reshape(1, len(z))
-            ipsi0, ipsi1, ipsi2 = get_psi(self.__kernel_hyperparameters_sq, self.__S, z, self.__Xu, self.__jitter)
-            cov = jnp.trace((ipsi2 - ipsi1.T@ipsi1)@vv(B.T, B.T), axis1=1, axis2=2) + ipsi0 - jnp.trace((jnp.linalg.inv(Kuu) - Q_inv)@ipsi2)
-            return cov
-
-        v_psi = vmap(each_psi)
-        return v_psi(self.__M_I).reshape(self.__M_I.shape[0])
+        cov_I = cov_gene_fp64(
+            self.__M_R,
+            self.__M_I,
+            self.__Xu,
+            self.__S,
+            self.__sigma,
+            self.__kernel_hyperparameters_sq,
+            self.__jitter,
+            self.__data[gene].values,
+        )
+        return cov_I.reshape(self.__M_I.shape[0])
 
     # properties
     @property
