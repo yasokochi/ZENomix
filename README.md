@@ -115,7 +115,7 @@ recon = znx.reconstruction()
 print(recon.head())
 ```
 
-> ✅️ For more details, see [examples](examples/).
+> ✅️ For more details, see [examples](examples/) and [API reference](docs/API_reference.md).
 
 ---
 
