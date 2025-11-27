@@ -3,7 +3,7 @@
 from jax import config
 config.update("jax_enable_x64", True)  # Enable 64-bit for numerical stability
 
-from jax import random, jit, value_and_grad, vmap
+from jax import random, jit, value_and_grad, vmap, device_get
 import jax.numpy as jnp
 import numpy as np
 import optax
@@ -139,11 +139,16 @@ class Model():
         self.__nr, self.__p = self.__A_R.shape
         self.__ni, self.__p = self.__A_I.shape
 
+        A_R_cpu = device_get(self.__A_R)
+        A_R_cpu = np.ascontiguousarray(A_R_cpu, dtype=np.float32)
+        A_I_cpu = device_get(self.__A_I)
+        A_I_cpu = np.ascontiguousarray(A_I_cpu, dtype=np.float32)
+
         # PCA initialization for both modalities (fit on A_R for consistency)
-        pca = PCA(n_components=self.__q, svd_solver='arpack', random_state=42)
-        pca.fit(np.asarray(self.__A_R))
-        self.__M_R_init = jnp.array(pca.transform(np.asarray(self.__A_R)), dtype=dtype)
-        self.__M_I_init = jnp.array(pca.transform(np.asarray(self.__A_I)), dtype=dtype)
+        pca = PCA(n_components=self.__q, svd_solver='arpack')
+        pca.fit(A_R_cpu)
+        self.__M_R_init = jnp.array(pca.transform(A_R_cpu), dtype=dtype)
+        self.__M_I_init = jnp.array(pca.transform(A_I_cpu), dtype=dtype)
         self.__M_R = self.__M_R_init.copy()
         self.__M_I = self.__M_I_init.copy()
 
