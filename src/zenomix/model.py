@@ -7,7 +7,6 @@ from jax import random, jit, value_and_grad, vmap, device_get
 import jax.numpy as jnp
 import numpy as np
 import optax
-from sklearn.decomposition import PCA
 from sklearn.cluster import kmeans_plusplus
 from scipy import optimize, stats
 import pandas as pd
@@ -132,25 +131,27 @@ class Model():
 
     def __initiate_params(self):
         # Standardize count matrices
-        A_R = self.__data[self.__genes_common].values
-        A_I = self.__reference.values
-        self.__A_R = jnp.array(stats.zscore(A_R), dtype=dtype)
-        self.__A_I = jnp.array(stats.zscore(A_I), dtype=dtype)
+        A_R_raw = jnp.array(self.__data[self.__genes_common].values, dtype=dtype) 
+        A_I_raw = jnp.array(self.__reference[self.__genes_common].values, dtype=dtype) 
+        # Z-score normalization
+        mean_r = jnp.mean(A_R_raw, axis=0)
+        std_r = jnp.std(A_R_raw, axis=0)
+        self.__A_R = (A_R_raw - mean_r) / std_r
+        mean_i = jnp.mean(A_I_raw, axis=0) 
+        std_i = jnp.std(A_I_raw, axis=0) 
+        self.__A_I = (A_I_raw - mean_i) / std_i 
+        
         self.__nr, self.__p = self.__A_R.shape
-        self.__ni, self.__p = self.__A_I.shape
+        self.__ni, _ = self.__A_I.shape 
+        # PCA initialization
+        U, S, Vt = jnp.linalg.svd(self.__A_R, full_matrices=False)
+        components = Vt[:self.__q, :].T
+        
+        self.__M_R_init = jnp.dot(self.__A_R, components) 
+        self.__M_I_init = jnp.dot(self.__A_I, components)
 
-        A_R_cpu = device_get(self.__A_R)
-        A_R_cpu = np.ascontiguousarray(A_R_cpu, dtype=np.float32)
-        A_I_cpu = device_get(self.__A_I)
-        A_I_cpu = np.ascontiguousarray(A_I_cpu, dtype=np.float32)
-
-        # PCA initialization for both modalities (fit on A_R for consistency)
-        pca = PCA(n_components=self.__q, svd_solver='arpack')
-        pca.fit(A_R_cpu)
-        self.__M_R_init = jnp.array(pca.transform(A_R_cpu), dtype=dtype)
-        self.__M_I_init = jnp.array(pca.transform(A_I_cpu), dtype=dtype)
-        self.__M_R = self.__M_R_init.copy()
-        self.__M_I = self.__M_I_init.copy()
+        self.__M_R = self.__M_R_init 
+        self.__M_I = self.__M_I_init
 
         # Initialize inducing points with k-means++ on concatenated latents
         RI = np.vstack([self.__M_R, self.__M_I])
