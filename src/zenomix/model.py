@@ -140,7 +140,7 @@ class Model():
         self.__ni, self.__p = self.__A_I.shape
 
         # PCA initialization for both modalities (fit on A_R for consistency)
-        pca = PCA(n_components=self.__q, svd_solver='arpack')
+        pca = PCA(n_components=self.__q, svd_solver='arpack', random_state=42)
         pca.fit(np.asarray(self.__A_R))
         self.__M_R_init = jnp.array(pca.transform(np.asarray(self.__A_R)), dtype=dtype)
         self.__M_I_init = jnp.array(pca.transform(np.asarray(self.__A_I)), dtype=dtype)
