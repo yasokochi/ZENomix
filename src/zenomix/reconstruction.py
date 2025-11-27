@@ -37,7 +37,7 @@ def gp_reconstruct_fp64(
     sigma = jnp.asarray(sigma, jnp.float64)
     H = jnp.asarray(kernel_hyperparams, jnp.float64)
     jitter = jnp.asarray(jitter, jnp.float64)
-    data_matrix = jnp.asarray(data_matrix, jnp.float64)
+    data_matrix = jnp.asarray(data_matrix, dtype=dtype)
 
     # ------ psi computation (fp64) ------
     rpsi0, rpsi1, rpsi2 = get_psi(H, S, M_R, Xu, jitter)
@@ -64,12 +64,12 @@ def gp_reconstruct_fp64(
     C = jsp.linalg.solve_triangular(L.T, BinvA, lower=False)
 
     # ------ β * Qinv @ rpsi1.T @ data = (1/sigma) * C @ data ------
-    B_coef = (1.0 / s) * (C @ data_matrix)
+    B_coef = ((1.0 / s) * (C @ data_matrix)).astype(dtype=dtype)
 
     # ------ Reconstruction on the I side ------
-    Y_I = ipsi1 @ B_coef
+    Y_I = (ipsi1 @ B_coef).astype(dtype=dtype)
 
-    return Y_I.astype(jnp.float64)
+    return Y_I
 
 
 def cov_gene_fp64(
