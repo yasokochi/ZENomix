@@ -18,8 +18,6 @@ from .cpu_wrappers import reconstruction_cpu, cov_gene_cpu
 Model.reconstruction_cpu = reconstruction_cpu
 Model.cov_gene_cpu = cov_gene_cpu
 
-__version__ = "0.9.0"
-
 __all__ = [
     "Model",
     "dtype", "EPS", "locs", "weights",
