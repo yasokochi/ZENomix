@@ -61,7 +61,7 @@ def gp_reconstruct_fp64(
     BinvA = jsp.linalg.solve_triangular(LB.T, Y_mid, lower=False)
 
     # ------ C = L^{-T} B^{-1} A ------
-    C = jsp.linalg.solve_triangular(L.T, BinvA, lower=False)
+    C = jsp.linalg.solve_triangular(L.T, BinvA, lower=False).astype(dtype=dtype)
 
     # ------ β * Qinv @ rpsi1.T @ data = (1/sigma) * C @ data ------
     B_coef = ((1.0 / s) * (C @ data_matrix)).astype(dtype=dtype)
