@@ -154,9 +154,9 @@ pip install "zenomix[cuda12,rff] @ git+https://github.com/yasokochi/ZENomix.git"
 
 ---
 
-## 6. Runtime / memory reference
+## 6. Runtime reference
 
-Shown below are approximate runtime and memory usage during latent_calibration fuction on different modes.
+Shown below are approximate runtime usage during latent_calibration fuction on different modes.
 Dataset: 50k scRNA-seq cells, 5k reference cells.
 
 | Mode | Time |
