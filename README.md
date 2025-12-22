@@ -159,11 +159,11 @@ pip install "zenomix[cuda12,rff] @ git+https://github.com/yasokochi/ZENomix.git"
 Shown below are approximate runtime and memory usage during latent_calibration fuction on different modes.
 Dataset: 50k scRNA-seq cells, 5k reference cells.
 
-| Mode | Time | Memory |
-|------|------|--------|
-| RFF + GPU | ~3 min | ~3 GB VRAM |
-| Full MMD + GPU | ~5 min | ~10 GB VRAM |
-| Full MMD + CPU | ~15 min | ~10 GB RAM |
+| Mode | Time |
+|------|------|
+| RFF + GPU | ~3 min |
+| Full MMD + GPU | ~5 min |
+| Full MMD + CPU | ~15 min |
 
 
 ---
