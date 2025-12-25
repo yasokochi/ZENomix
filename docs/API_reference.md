@@ -111,23 +111,5 @@ Reconstruct gene expression for the reference cells using the calibrated model.
   Reconstructed expression matrix of shape `(n_reference_cells, n_genes)`.  
   Columns correspond to genes; rows correspond to the reference index.
 
----
 
-## `Model.cov_gene`
-
-```python
-var = Model.cov_gene(gene)
-```
-
-Estimate the predictive variance of reconstructed expression for a single gene.
-
-### **Parameters**
-
-- **gene** (*str*)  
-  Gene name in `Model.data.columns`.
-
-### **Returns**
-
-- **var** (*jax.numpy.ndarray*)  
-  1D array of length `n_reference_cells` containing predictive variances.
 
