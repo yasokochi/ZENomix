@@ -116,6 +116,7 @@ class Model():
         self.__sigma = jnp.sqrt(sigma2)       # observation std (sigma^2 given)
         self.init_Params = None               # flattened parameter vector (optimizer state)
         self.logging_hyperparameters = None   # history of (S2, sigma2, kernel lengthscale^2)
+        self.logging_mmd = None
 
         # Random key
         if key is None:
@@ -191,6 +192,16 @@ class Model():
         self._init_vals = [jnp.array(self._init_vals[0], dtype=dtype), jnp.array(self._init_vals[1], dtype=dtype)]
 
 
+    def _compute_normalized_mmd(self, params):
+        params = jnp.asarray(params, dtype=dtype)
+        Params_r, Params_i = shapeParams(params, self.__Xu, self.__M_R, self.__M_I, self.__kernel_hyperparameters_sq)
+        M_R_cur = toParams(Params_r, self.__Xu, self.__M_R, self.__kernel_hyperparameters_sq)[1]
+        M_I_cur = toParams(Params_i, self.__Xu, self.__M_I, self.__kernel_hyperparameters_sq)[1]
+        mmd_val = (MMD_rff(M_R_cur, M_I_cur, self.__W, self.__b)
+                   if (self.__W is not None and self.__b is not None)
+                   else MMD(M_R_cur, M_I_cur, self.__MMD_H, self.__jitter))
+        return float(mmd_val / self._init_vals[1])
+
     def numpy_loss_vec_ri(self, A):
         # Wrapper for SciPy: loss value as a NumPy array
         return np.array(minus_Lri(
@@ -235,10 +246,14 @@ class Model():
         if m in ('lbfgs', 'l-bfgs', 'l-bfgs-b'):
             # initialize logging with current (S^2, sigma^2, lengthscale^2)
             self.logging_hyperparameters = [[self.__S**2, self.__sigma**2, self.__kernel_hyperparameters_sq[0]**2]]
+            self.logging_mmd = []
 
             # Callback logs hyperparameters along optimization path
             def callback(xk):
                 self.logging_hyperparameters.append([i**2 for i in xk[-(self.__num_kernel_hyperparameters + 2):]])
+                mmd_norm = self._compute_normalized_mmd(xk)
+                self.logging_mmd.append(mmd_norm)
+                print(f"  MMD = {mmd_norm:.6f}")
 
             # Default SciPy options if none provided
             options = kwargs.get('scipy_options', None)
@@ -284,6 +299,7 @@ class Model():
             self.logging_hyperparameters = [[
                 (self.__S**2).item(), (self.__sigma**2).item(), (self.__kernel_hyperparameters_sq[0]**2).item()
             ]]
+            self.logging_mmd = []
             params = self.init_Params
 
             # Loss function for JAX optimization
@@ -315,15 +331,25 @@ class Model():
             # Main optimization loop
             for t in range(int(steps)):
                 params, opt_state, loss = step(params, opt_state)
-                if (t % print_every) == 0 or (t == steps - 1):
-                    print(f"Epoch {t}: loss = {loss.item()}")
-                if (t % log_every) == 0 or (t == steps - 1):
-                    # Log current S^2, sigma^2, and kernel lengthscale^2
+                should_print = (t % print_every) == 0 or (t == steps - 1)
+                should_log   = (t % log_every) == 0 or (t == steps - 1)
+
+                if should_print or should_log:
                     Params_r, Params_i = shapeParams(params, self.__Xu, self.__M_R, self.__M_I, self.__kernel_hyperparameters_sq)
                     _, _, S_cur, sigma_cur, H_cur = toParams(Params_r, self.__Xu, self.__M_R, self.__kernel_hyperparameters_sq)
+
+                if should_print:
+                    mmd_norm = self._compute_normalized_mmd(params)
+                    print(f"Epoch {t}: loss = {loss.item()}, MMD = {mmd_norm:.6f}")
+
+                if should_log:
                     self.logging_hyperparameters.append([
                         (S_cur**2).item(), (sigma_cur**2).item(), (H_cur[0]**2).item()
                     ])
+                    if should_print:
+                        self.logging_mmd.append(mmd_norm)
+                    else:
+                        self.logging_mmd.append(self._compute_normalized_mmd(params))
 
             # Store final parameters
             Params_r, Params_i = shapeParams(params, self.__Xu, self.__M_R, self.__M_I, self.__kernel_hyperparameters_sq)
