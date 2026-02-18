@@ -253,7 +253,6 @@ class Model():
                 self.logging_hyperparameters.append([i**2 for i in xk[-(self.__num_kernel_hyperparameters + 2):]])
                 mmd_norm = self._compute_normalized_mmd(xk)
                 self.logging_mmd.append(mmd_norm)
-                print(f"  MMD = {mmd_norm:.6f}")
 
             # Default SciPy options if none provided
             options = kwargs.get('scipy_options', None)
@@ -278,6 +277,10 @@ class Model():
                 callback=callback,
                 options=options
             )
+
+            # Print final MMD
+            final_mmd = self._compute_normalized_mmd(self._res.x)
+            print(f"  MMD = {final_mmd:.6f}")
 
             # Unpack optimized parameters for both modalities
             Params_r, Params_i = shapeParams(self._res.x, self.__Xu, self.__M_R, self.__M_I, self.__kernel_hyperparameters_sq)
