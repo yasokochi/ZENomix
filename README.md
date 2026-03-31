@@ -1,7 +1,7 @@
 # ZENomix
 
 ZENomix enables zero-shot reconstruction of mutant spatial transcriptomes using scRNA-seq and wildtype *in situ* data.
-> Cite: Yasushi Okochi, Takaaki Matsui, Shunta Sakaguchi, Takefumi Kondo, Honda Naoki, Zero-shot reconstruction of mutant spatial transcriptomes, bioRxiv, 2022
+> Cite: Yasushi Okochi, Takaaki Matsui, Shunta Sakaguchi, Takefumi Kondo, Honda Naoki, Zero-shot reconstruction of mutant spatial transcriptomes, Patterns, 2026
 
 ---
 
